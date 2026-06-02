@@ -3,105 +3,75 @@ import { useState, useEffect } from "react";
 
 function Home() {
 
-const [fecha, setFecha] = useState("");
+    const [fecha, setFecha] = useState("");
 
-        return (
-            <>
-                <h1>TP Final Dev-01</h1>
-                <div>
-                     <div className="container mt-5">
-      <h2>Fecha</h2>
-      
-      <div className="mb-3">
-        <label htmlFor="fecha" className="form-label">
-          Selecciona una fecha:
-        </label>
-        <input
-          type="date"
-          id="fecha"
-          className="form-control"
-          value={fecha}
-          onChange={(e) => setFecha(e.target.value)}
-        />
-      </div>
+    return (
+        <>
+            <h1>TP Final Dev-01</h1>
+            <div>
+                <div className="container mt-5">
+                    <h2>Fecha</h2>
 
-      <p>Fecha seleccionada: {fecha}</p>
-    </div>
-
-
-                    <div class="field">
-                        <label class="label">Name</label>
-                        <div class="control">
-                            <input class="input" type="text" placeholder="Text input"/>
-                        </div>
+                    <div className="mb-3">
+                        <label htmlFor="fecha" className="form-label">
+                            Selecciona una fecha:
+                        </label>
+                        <input
+                            type="date"
+                            id="fecha"
+                            className="form-control"
+                            value={fecha}
+                            onChange={(e) => setFecha(e.target.value)}
+                        />
                     </div>
 
-                    <div class="field">
-                        <label class="label">Username</label>
-                        <div class="control has-icons-left has-icons-right">
-                            <input class="input is-success" type="text" placeholder="Text input" value="bulma"/>
-                                <span class="icon is-small is-left">
-                                    <i class="fas fa-user"></i>
-                                </span>
-                                <span class="icon is-small is-right">
-                                    <i class="fas fa-check"></i>
-                                </span>
-                        </div>
-                        <p class="help is-success">This username is available</p>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Email</label>
-                        <div class="control has-icons-left has-icons-right">
-                            <input class="input is-danger" type="email" placeholder="Email input" value="hello@"/>
-                                <span class="icon is-small is-left">
-                                    <i class="fas fa-envelope"></i>
-                                </span>
-                                <span class="icon is-small is-right">
-                                    <i class="fas fa-exclamation-triangle"></i>
-                                </span>
-                        </div>
-                        <p class="help is-danger">This email is invalid</p>
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Categoria</label>
-                        <div class="control">
-                            <div class="select">
-                                <select>
-                                    <option>Select dropdown</option>
-                                    <option>Transporte</option>
-                                    <option>Almacén</option>
-                                    <option>Gastos Personales</option>
-                                    <option>Internet</option>
-                                    
-                                </select>
-                            </div>
-                        </div>  
-                    </div>
-
-                    <div class="field">
-                        <label class="label">Detalle</label>
-                        <div class="control">
-                            <textarea class="textarea" placeholder="Detalle"></textarea>
-                        </div>
-                    </div>
-
-                    <div class="field is-grouped">
-                        <div class="control">
-                            <button class="button is-link">Submit</button>
-                        </div>
-                        <div class="control">
-                            <button class="button is-link is-light">Cancel</button>
-                        </div>
-                    </div>
-
+                    <p>Fecha seleccionada: {fecha}</p>
                 </div>
 
-            </>
 
-        )
-    }
+                <div class="field">
+                    <label class="label">Monto$</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Text input" />
+                    </div>
+                </div>
+
+
+                <div class="field">
+                    <label class="label">Categoria</label>
+                    <div class="control">
+                        <div class="select">
+                            <select>
+                                <option>Select dropdown</option>
+                                <option>Transporte</option>
+                                <option>Almacén</option>
+                                <option>Gastos Personales</option>
+                                <option>Internet</option>
+
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label class="label">Detalle</label>
+                    <div class="control">
+                        <textarea class="textarea" placeholder="Detalle"></textarea>
+                    </div>
+                </div>
+
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-link">Agregar</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </>
+
+    )
+}
 
 
 
