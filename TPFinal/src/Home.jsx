@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 function Home() {
 
     const [fecha, setFecha] = useState("");
+    const [detalle, setDetalle] = useState("");
 
     return (
         <>
@@ -39,7 +40,7 @@ function Home() {
                             <div class="control">
                                 <div class="select">
                                     <select>
-                                        <option>Select dropdown</option>
+                                        <option>Select </option>
                                         <option>Transporte</option>
                                         <option>Almacén</option>
                                         <option>Gastos Personales</option>
@@ -55,7 +56,7 @@ function Home() {
                     <div className="column">
 
                         <div class="field">
-                            <label class="label">$Monto$</label>
+                            <label class="label">Monto$</label>
                             <div class="control">
                                 <input class="input" type="text" placeholder="..." />
                             </div>
@@ -65,7 +66,10 @@ function Home() {
 
                 <div class="field">
                     <div class="control">
-                        <textarea class="textarea" placeholder="Detalle..."></textarea>
+                        <textarea class="textarea" placeholder="Detalle..."
+                            value={detalle}
+                            onChange={(e) => setDetalle(e.target.value)}
+                        />
                     </div>
                 </div>
 
@@ -76,35 +80,28 @@ function Home() {
                 </div>
 
                 <table className="table is-fullwidth is-striped">
-                    <thead>
-                        <tr>
-                            <th>Monto $</th>
-                            <th>Categoría</th>
-                            <th>Fecha</th>
-                            <th>Detalle</th>
-                        </tr>
-                    </thead>
+            <thead>
+                <tr>
+                    <th>Monto $</th>
+                    <th>Categoría</th>
+                    <th>Fecha</th>
+                    <th>Detalle</th>
+                </tr>
+            </thead>
 
-                    <tbody>
-                        <tr>
-                            <td>$1000</td>
-                            <td>Internet</td>
-                            <td>03/06/2026</td>
-                            <td>Pago mensual del servicio</td>
-                        </tr>
-                    </tbody>
+            <tbody>
+                <tr>
+                    <td>$1000</td>
+                    <td>Internet</td>
+                    <td>03/06/2026</td>
+                    <td>Pago mensual del servicio</td>
+                </tr>
+            </tbody>
 
-                    <tbody>
-                        <tr>
-                            <td>$1000</td>
-                            <td>Internet</td>
-                            <td>03/06/2026</td>
-                            <td>Pago mensual del servicio</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-
+            <tbody>
+                <td>{detalle}</td>
+            </tbody>
+        </table>
 
             </div>
 
