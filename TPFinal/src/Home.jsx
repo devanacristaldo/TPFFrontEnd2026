@@ -93,6 +93,15 @@ function Home() {
                             <td>Pago mensual del servicio</td>
                         </tr>
                     </tbody>
+
+                    <tbody>
+                        <tr>
+                            <td>$1000</td>
+                            <td>Internet</td>
+                            <td>03/06/2026</td>
+                            <td>Pago mensual del servicio</td>
+                        </tr>
+                    </tbody>
                 </table>
 
 
