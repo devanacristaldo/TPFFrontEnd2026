@@ -7,7 +7,5 @@ import Table from './Table.jsx'
 createRoot(document.getElementById('root')).render(
   <>
     <Home />
-    
-    
   </>
 )

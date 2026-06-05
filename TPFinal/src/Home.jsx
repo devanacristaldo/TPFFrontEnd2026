@@ -5,6 +5,9 @@ function Home() {
 
     const [fecha, setFecha] = useState("");
     const [detalle, setDetalle] = useState("");
+    const [categoria, setCategoria] = useState("");
+    const [monto, setMonto] = useState("");
+
 
     return (
         <>
@@ -39,7 +42,8 @@ function Home() {
                             <label class="label">Categoria</label>
                             <div class="control">
                                 <div class="select">
-                                    <select>
+                                    <select value={categoria}
+                                        onChange={(e) => setCategoria(e.target.value)}>
                                         <option>Select </option>
                                         <option>Transporte</option>
                                         <option>Almacén</option>
@@ -58,7 +62,9 @@ function Home() {
                         <div class="field">
                             <label class="label">Monto$</label>
                             <div class="control">
-                                <input class="input" type="text" placeholder="..." />
+                                <input class="input" type="text" placeholder="..."
+                                    value={monto}
+                                    onChange={(e) => setMonto(e.target.value)} />
                             </div>
                         </div>
                     </div>
@@ -80,28 +86,31 @@ function Home() {
                 </div>
 
                 <table className="table is-fullwidth is-striped">
-            <thead>
-                <tr>
-                    <th>Monto $</th>
-                    <th>Categoría</th>
-                    <th>Fecha</th>
-                    <th>Detalle</th>
-                </tr>
-            </thead>
+                    <thead>
+                        <tr>
+                            <th>Monto $</th>
+                            <th>Categoría</th>
+                            <th>Fecha</th>
+                            <th>Detalle</th>
+                        </tr>
+                    </thead>
 
-            <tbody>
-                <tr>
-                    <td>$1000</td>
-                    <td>Internet</td>
-                    <td>03/06/2026</td>
-                    <td>Pago mensual del servicio</td>
-                </tr>
-            </tbody>
+                    <tbody>
+                        <tr>
+                            <td>$1000</td>
+                            <td>Internet</td>
+                            <td>03/06/2026</td>
+                            <td>Pago mensual del servicio</td>
+                        </tr>
+                    </tbody>
 
-            <tbody>
-                <td>{detalle}</td>
-            </tbody>
-        </table>
+                    <tbody>
+                        <td>${monto}</td>
+                        <td>{categoria}</td>
+                        <td>{fecha}</td>
+                        <td>{detalle}</td>
+                    </tbody>
+                </table>
 
             </div>
 
