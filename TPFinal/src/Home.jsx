@@ -1,5 +1,5 @@
-
 import { useState, useEffect } from "react";
+import { setItem, getItem } from "./utils/localStorage";
 
 function Home() {
 
@@ -8,6 +8,79 @@ function Home() {
     const [categoria, setCategoria] = useState("");
     const [monto, setMonto] = useState("");
 
+    const [gastos, setGastos] = useState([]);
+    const [gastoEditando, setGastoEditando] = useState(null); // Para saber si estamos actualizando
+
+    // Cargar gastos guardados al iniciar
+    useEffect(() => {
+        const gastosGuardados = getItem("gastos");
+        if (gastosGuardados) {
+            setGastos(gastosGuardados);
+        }
+    }, []);
+
+    // Agregar o actualizar gasto
+    function agregarGasto() {
+        if (!monto || !categoria || !fecha) {
+            alert("Por favor completa fecha, categoría y monto");
+            return;
+        }
+
+        const nuevoGasto = {
+            id: gastoEditando ? gastoEditando.id : Date.now(), // ID único
+            monto: monto,
+            categoria: categoria,
+            fecha: fecha,
+            detalle: detalle
+        };
+
+        let nuevosGastos;
+
+        if (gastoEditando) {
+            // Actualizar gasto existente
+            nuevosGastos = gastos.map(gasto => 
+                gasto.id === gastoEditando.id ? nuevoGasto : gasto
+            );
+            setGastoEditando(null);
+        } else {
+            // Agregar nuevo gasto
+            nuevosGastos = [...gastos, nuevoGasto];
+        }
+
+        setGastos(nuevosGastos);
+        setItem("gastos", nuevosGastos); // Guardar array completo
+
+        // Limpiar formulario
+        setFecha("");
+        setDetalle("");
+        setCategoria("");
+        setMonto("");
+    }
+
+    // Eliminar gasto
+    function eliminarGasto(id) {
+        const nuevosGastos = gastos.filter(gasto => gasto.id !== id);
+        setGastos(nuevosGastos);
+        setItem("gastos", nuevosGastos);
+    }
+
+    // Preparar edición
+    function editarGasto(gasto) {
+        setFecha(gasto.fecha);
+        setDetalle(gasto.detalle);
+        setCategoria(gasto.categoria);
+        setMonto(gasto.monto);
+        setGastoEditando(gasto);
+    }
+
+    // Cancelar edición
+    function cancelarEdicion() {
+        setFecha("");
+        setDetalle("");
+        setCategoria("");
+        setMonto("");
+        setGastoEditando(null);
+    }
 
     return (
         <>
@@ -15,7 +88,6 @@ function Home() {
             <div>
 
                 <div className="columns">
-
 
                     <div className="column">
 
@@ -37,7 +109,6 @@ function Home() {
 
                     <div className="column">
 
-
                         <div class="field">
                             <label class="label">Categoria</label>
                             <div class="control">
@@ -55,7 +126,6 @@ function Home() {
                             </div>
                         </div>
                     </div>
-
 
                     <div className="column">
 
@@ -81,8 +151,21 @@ function Home() {
 
                 <div class="field is-grouped">
                     <div class="control">
-                        <button class="button is-link">Agregar</button>
+                        <button
+                            className="button is-link"
+                            onClick={agregarGasto}>
+                            {gastoEditando ? "Actualizar" : "Agregar"}
+                        </button>
                     </div>
+                    {gastoEditando && (
+                        <div class="control">
+                            <button
+                                className="button is-warning"
+                                onClick={cancelarEdicion}>
+                                Cancelar
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <table className="table is-fullwidth is-striped">
@@ -92,23 +175,42 @@ function Home() {
                             <th>Categoría</th>
                             <th>Fecha</th>
                             <th>Detalle</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        <tr>
-                            <td>$1000</td>
-                            <td>Internet</td>
-                            <td>03/06/2026</td>
-                            <td>Pago mensual del servicio</td>
-                        </tr>
-                    </tbody>
-
-                    <tbody>
-                        <td>${monto}</td>
-                        <td>{categoria}</td>
-                        <td>{fecha}</td>
-                        <td>{detalle}</td>
+                        {gastos.length === 0 ? (
+                            <tr>
+                                <td colSpan="5" style={{ textAlign: "center" }}>
+                                    No hay gastos registrados
+                                </td>
+                            </tr>
+                        ) : (
+                            gastos.map((gasto) => (
+                                <tr key={gasto.id}>
+                                    <td>${gasto.monto}</td>
+                                    <td>{gasto.categoria}</td>
+                                    <td>{gasto.fecha}</td>
+                                    <td>{gasto.detalle}</td>
+                                    <td>
+                                        <button
+                                            className="button is-warning is-small"
+                                            onClick={() => editarGasto(gasto)}
+                                            style={{ marginRight: "5px" }}
+                                        >
+                                            Editar
+                                        </button>
+                                        <button
+                                            className="button is-danger is-small"
+                                            onClick={() => eliminarGasto(gasto.id)}
+                                        >
+                                            Eliminar
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
                 </table>
 
@@ -119,6 +221,4 @@ function Home() {
     )
 }
 
-
-
-export default Home 
+export default Home
