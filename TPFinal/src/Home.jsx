@@ -1,15 +1,21 @@
 import { useState, useEffect } from "react";
 import { setItem, getItem } from "./utils/localStorage";
 
+
 function Home() {
 
+    /*Datos x tomar */
     const [fecha, setFecha] = useState("");
     const [detalle, setDetalle] = useState("");
     const [categoria, setCategoria] = useState("");
     const [monto, setMonto] = useState("");
 
+    //Array donde se guardan todos los gastos
     const [gastos, setGastos] = useState([]);
-    const [gastoEditando, setGastoEditando] = useState(null); // Para saber si estamos actualizando
+
+    //pivote donde guardar gastos antes de actualizad/remplazar
+    const [gastoEditando, setGastoEditando] = useState(null); 
+
 
     // Cargar gastos guardados al iniciar
     useEffect(() => {
@@ -19,52 +25,68 @@ function Home() {
         }
     }, []);
 
+
     // Agregar o actualizar gasto
     function agregarGasto() {
+        // actualizar: Validar q el monto sea numero mayor a 0
         if (!monto || !categoria || !fecha) {
             alert("Por favor completa fecha, categoría y monto");
             return;
         }
 
+        // actualizado boton: Validar q el monto sea numero mayor a 0
+        const montoNumerico = parseFloat(monto);
+        if (isNaN(montoNumerico) || montoNumerico <= 0) {
+            alert("El monto debe ser un mayor a 0");
+            return;
+        }
+
+
         const nuevoGasto = {
-            id: gastoEditando ? gastoEditando.id : Date.now(), // ID único
+            id: gastoEditando ? gastoEditando.id : Date.now(), // ID unico, se toma en microsegundos
             monto: monto,
             categoria: categoria,
             fecha: fecha,
             detalle: detalle
         };
 
+
         let nuevosGastos;
 
+
         if (gastoEditando) {
-            // Actualizar gasto existente
+            // Actualisar gasto existente
             nuevosGastos = gastos.map(gasto => 
                 gasto.id === gastoEditando.id ? nuevoGasto : gasto
             );
             setGastoEditando(null);
         } else {
-            // Agregar nuevo gasto
+            //agregar nuevo gasto
             nuevosGastos = [...gastos, nuevoGasto];
         }
 
-        setGastos(nuevosGastos);
-        setItem("gastos", nuevosGastos); // Guardar array completo
 
-        // Limpiar formulario
+        setGastos(nuevosGastos);
+        setItem("gastos", nuevosGastos); //guarda array completo
+
+
+        // limpia formulario
         setFecha("");
         setDetalle("");
         setCategoria("");
         setMonto("");
     }
 
-    // Eliminar gasto
+
+    //Eliminar gasto
     function eliminarGasto(id) {
         const nuevosGastos = gastos.filter(gasto => gasto.id !== id);
         setGastos(nuevosGastos);
         setItem("gastos", nuevosGastos);
     }
 
-    // Preparar edición
+
+    //Prepara edicion
     function editarGasto(gasto) {
         setFecha(gasto.fecha);
         setDetalle(gasto.detalle);
@@ -73,7 +95,8 @@ function Home() {
         setGastoEditando(gasto);
     }
 
-    // Cancelar edición
+
+    // Cancela edicion
     function cancelarEdicion() {
         setFecha("");
         setDetalle("");
@@ -82,19 +105,26 @@ function Home() {
         setGastoEditando(null);
     }
 
+
     return (
         <>
             <h1>TP Final Dev-01</h1>
+
             <div>
+
 
                 <div className="columns">
 
+
                     <div className="column">
+
 
                         <div className="container mt-5">
 
+
                             <div className="mb-3">
                                 <label class="label">Fecha</label>
+
 
                                 <input
                                     type="date"
@@ -107,7 +137,9 @@ function Home() {
                         </div>
                     </div>
 
+
                     <div className="column">
+
 
                         <div class="field">
                             <label class="label">Categoria</label>
@@ -115,11 +147,15 @@ function Home() {
                                 <div class="select">
                                     <select value={categoria}
                                         onChange={(e) => setCategoria(e.target.value)}>
-                                        <option>Select </option>
+                                        <option>Gastos Varios </option>
                                         <option>Transporte</option>
                                         <option>Almacén</option>
-                                        <option>Gastos Personales</option>
+                                        <option>Esparcimiento</option>
+                                        <option>Gimnasio</option>
+                                        <option>Luz</option>
+                                        <option>Celular</option>
                                         <option>Internet</option>
+
 
                                     </select>
                                 </div>
@@ -127,18 +163,24 @@ function Home() {
                         </div>
                     </div>
 
+
                     <div className="column">
+
 
                         <div class="field">
                             <label class="label">Monto$</label>
                             <div class="control">
-                                <input class="input" type="text" placeholder="..."
+                                {/*actualiza el boton: input solo acepta numeros! */}
+                                <input class="input" type="number" placeholder="..."
                                     value={monto}
+                                    min="0"
+                                    step="any"
                                     onChange={(e) => setMonto(e.target.value)} />
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="field">
                     <div class="control">
@@ -148,13 +190,15 @@ function Home() {
                         />
                     </div>
                 </div>
+                
+
 
                 <div class="field is-grouped">
                     <div class="control">
                         <button
                             className="button is-link"
                             onClick={agregarGasto}>
-                            {gastoEditando ? "Actualizar" : "Agregar"}
+                            {gastoEditando ? "Aceptar" : "Agregar"}
                         </button>
                     </div>
                     {gastoEditando && (
@@ -168,6 +212,7 @@ function Home() {
                     )}
                 </div>
 
+
                 <table className="table is-fullwidth is-striped">
                     <thead>
                         <tr>
@@ -176,9 +221,12 @@ function Home() {
                             <th>Fecha</th>
                             <th>Detalle</th>
                             <th>Acciones</th>
+                            <th></th>
                         </tr>
                     </thead>
 
+
+                    {/*si gastos =/= 0, muestra todos los registros en gastos ++ boton de editar y eliminar */}
                     <tbody>
                         {gastos.length === 0 ? (
                             <tr>
@@ -214,11 +262,15 @@ function Home() {
                     </tbody>
                 </table>
 
+
             </div>
+
 
         </>
 
+
     )
 }
+
 
 export default Home
