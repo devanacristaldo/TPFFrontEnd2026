@@ -1,224 +1,136 @@
 import { useState, useEffect } from "react";
 import { setItem, getItem } from "./utils/localStorage";
+import GastosFormulario from "./GastosFormulario"; 
+import GastosTabla from "./GastosTabla";  
 
+// Componente principal: Home (gestion estado y logica)
 function Home() {
 
-    const [fecha, setFecha] = useState("");
-    const [detalle, setDetalle] = useState("");
-    const [categoria, setCategoria] = useState("");
-    const [monto, setMonto] = useState("");
+  //Datos
+  const [fecha, setFecha] = useState("");  
+  const [detalle, setDetalle] = useState(""); 
+  const [categoria, setCategoria] = useState("");  
+  const [monto, setMonto] = useState("");  
 
-    const [gastos, setGastos] = useState([]);
-    const [gastoEditando, setGastoEditando] = useState(null); // Para saber si estamos actualizando
+  //Array donde se guardan todos los gastos
+  const [gastos, setGastos] = useState([]);  
 
-    // Cargar gastos guardados al iniciar
-    useEffect(() => {
-        const gastosGuardados = getItem("gastos");
-        if (gastosGuardados) {
-            setGastos(gastosGuardados);
-        }
-    }, []);
+  //bandera que muestra si se esta actualizando o editando, + va a traer datos de GastosTabla
+  const [gastoEditando, setGastoEditando] = useState(null);  
 
-    // Agregar o actualizar gasto
-    function agregarGasto() {
-        if (!monto || !categoria || !fecha) {
-            alert("Por favor completa fecha, categoría y monto");
-            return;
-        }
+  // Cargar gastos guardados al iniciar
+  useEffect(() => {  
+    const gastosGuardados = getItem("gastos"); 
+    if (gastosGuardados) {
+      setGastos(gastosGuardados); 
+    }
+  }, []);  // [] hace q solo se active al montar
 
-        const nuevoGasto = {
-            id: gastoEditando ? gastoEditando.id : Date.now(), // ID único
-            monto: monto,
-            categoria: categoria,
-            fecha: fecha,
-            detalle: detalle
-        };
 
-        let nuevosGastos;
-
-        if (gastoEditando) {
-            // Actualizar gasto existente
-            nuevosGastos = gastos.map(gasto => 
-                gasto.id === gastoEditando.id ? nuevoGasto : gasto
-            );
-            setGastoEditando(null);
-        } else {
-            // Agregar nuevo gasto
-            nuevosGastos = [...gastos, nuevoGasto];
-        }
-
-        setGastos(nuevosGastos);
-        setItem("gastos", nuevosGastos); // Guardar array completo
-
-        // Limpiar formulario
-        setFecha("");
-        setDetalle("");
-        setCategoria("");
-        setMonto("");
+  function agregarGasto() { 
+    
+    // Valida que los campos esten correctamente puestos ++ que monto sea un numero
+    if (!monto || !categoria || !fecha) {
+      alert("Por favor completa fecha, categoría y monto");
+      return;
+    }
+    const montoNumerico = parseFloat(monto); 
+    if (isNaN(montoNumerico) || montoNumerico <= 0) { 
+      alert("El monto debe ser un mayor a 0");
+      return;
     }
 
-    // Eliminar gasto
-    function eliminarGasto(id) {
-        const nuevosGastos = gastos.filter(gasto => gasto.id !== id);
-        setGastos(nuevosGastos);
-        setItem("gastos", nuevosGastos);
+    //declara un nuevo gasto
+    const nuevoGasto = {
+      id: gastoEditando ? gastoEditando.id : Date.now(), // ID unico, se toma en milisegundos
+      monto: monto,
+      categoria: categoria,
+      fecha: fecha,
+      detalle: detalle
+    };
+
+    let nuevosGastos;  // Variable nuevo array
+
+    //si gasto.id == gastoEditado.id: se remplazara gasto por gastoEditado, si no se remplazara gasto por si mismo
+    if (gastoEditando) { 
+      nuevosGastos = gastos.map(gasto => 
+        gasto.id === gastoEditando.id ? nuevoGasto : gasto
+      );
+      setGastoEditando(null);  // Resetea el valor de gastoEditado para poder volver a usarlo de pivote
+    } else {  
+      nuevosGastos = [...gastos, nuevoGasto]; //si !gastoEditado entonces solo se agrega al Array de gastos
     }
 
-    // Preparar edición
-    function editarGasto(gasto) {
-        setFecha(gasto.fecha);
-        setDetalle(gasto.detalle);
-        setCategoria(gasto.categoria);
-        setMonto(gasto.monto);
-        setGastoEditando(gasto);
-    }
+    setGastos(nuevosGastos);
+    setItem("gastos", nuevosGastos); //guarda array completo
 
-    // Cancelar edición
-    function cancelarEdicion() {
-        setFecha("");
-        setDetalle("");
-        setCategoria("");
-        setMonto("");
-        setGastoEditando(null);
-    }
+    // limpia formulario
+    setFecha("");  
+    setDetalle("");  
+    setCategoria(""); 
+    setMonto(""); 
+  }
 
-    return (
-        <>
-            <h1>TP Final Dev-01</h1>
-            <div>
+  // Elimina el gasto cuyo id coincide, actualiza el estado y guarda el nuevo listado
+  function eliminarGasto(id) {  
+    const nuevosGastos = gastos.filter(gasto => gasto.id !== id);  
+    setGastos(nuevosGastos);  
+    setItem("gastos", nuevosGastos);  
+  }
 
-                <div className="columns">
+  //Prepara edicion
+  function editarGasto(gasto) {  
+    setFecha(gasto.fecha); 
+    setDetalle(gasto.detalle);  
+    setCategoria(gasto.categoria);  
+    setMonto(gasto.monto);  
+    setGastoEditando(gasto);  
+  }
 
-                    <div className="column">
+  // Cancela edicion (clear todo)
+  function cancelarEdicion() { 
+    setFecha("");  
+    setDetalle("");  
+    setCategoria("");  
+    setMonto("");  
+    setGastoEditando(null); 
+  }
 
-                        <div className="container mt-5">
+  return (
+    <>
+      <h1>Trabajo Practico Final</h1>  
 
-                            <div className="mb-3">
-                                <label class="label">Fecha</label>
+      <div>
+        
+        <GastosFormulario 
+          fecha={fecha}
+          detalle={detalle}
+          categoria={categoria}
+          monto={monto}
+          gastoEditando={gastoEditando}
+          setFecha={setFecha}
+          setDetalle={setDetalle}
+          setCategoria={setCategoria}
+          setMonto={setMonto}
+          agregarGasto={agregarGasto}
+          cancelarEdicion={cancelarEdicion}
+        />
 
-                                <input
-                                    type="date"
-                                    id="fecha"
-                                    className="form-control"
-                                    value={fecha}
-                                    onChange={(e) => setFecha(e.target.value)}
-                                />
-                            </div>
-                        </div>
-                    </div>
+        <GastosTabla 
+          gastos={gastos}
+          editarGasto={editarGasto}
+          eliminarGasto={eliminarGasto}
+        />
+      </div>
 
-                    <div className="column">
+ <footer className="footer has-text-centered">
+      <div className="content">
+        <p>Ana Luz M. Cristaldo</p>
+      </div>
+    </footer>
 
-                        <div class="field">
-                            <label class="label">Categoria</label>
-                            <div class="control">
-                                <div class="select">
-                                    <select value={categoria}
-                                        onChange={(e) => setCategoria(e.target.value)}>
-                                        <option>Select </option>
-                                        <option>Transporte</option>
-                                        <option>Almacén</option>
-                                        <option>Gastos Personales</option>
-                                        <option>Internet</option>
-
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="column">
-
-                        <div class="field">
-                            <label class="label">Monto$</label>
-                            <div class="control">
-                                <input class="input" type="text" placeholder="..."
-                                    value={monto}
-                                    onChange={(e) => setMonto(e.target.value)} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="field">
-                    <div class="control">
-                        <textarea class="textarea" placeholder="Detalle..."
-                            value={detalle}
-                            onChange={(e) => setDetalle(e.target.value)}
-                        />
-                    </div>
-                </div>
-
-                <div class="field is-grouped">
-                    <div class="control">
-                        <button
-                            className="button is-link"
-                            onClick={agregarGasto}>
-                            {gastoEditando ? "Actualizar" : "Agregar"}
-                        </button>
-                    </div>
-                    {gastoEditando && (
-                        <div class="control">
-                            <button
-                                className="button is-warning"
-                                onClick={cancelarEdicion}>
-                                Cancelar
-                            </button>
-                        </div>
-                    )}
-                </div>
-
-                <table className="table is-fullwidth is-striped">
-                    <thead>
-                        <tr>
-                            <th>Monto $</th>
-                            <th>Categoría</th>
-                            <th>Fecha</th>
-                            <th>Detalle</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        {gastos.length === 0 ? (
-                            <tr>
-                                <td colSpan="5" style={{ textAlign: "center" }}>
-                                    No hay gastos registrados
-                                </td>
-                            </tr>
-                        ) : (
-                            gastos.map((gasto) => (
-                                <tr key={gasto.id}>
-                                    <td>${gasto.monto}</td>
-                                    <td>{gasto.categoria}</td>
-                                    <td>{gasto.fecha}</td>
-                                    <td>{gasto.detalle}</td>
-                                    <td>
-                                        <button
-                                            className="button is-warning is-small"
-                                            onClick={() => editarGasto(gasto)}
-                                            style={{ marginRight: "5px" }}
-                                        >
-                                            Editar
-                                        </button>
-                                        <button
-                                            className="button is-danger is-small"
-                                            onClick={() => eliminarGasto(gasto.id)}
-                                        >
-                                            Eliminar
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
-
-            </div>
-
-        </>
-
-    )
+    </>
+  );
 }
 
-export default Home
+export default Home;  // Exporta componente principal
