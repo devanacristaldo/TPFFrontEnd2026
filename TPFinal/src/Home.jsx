@@ -98,7 +98,7 @@ function Home() {
 
   return (
     <>
-      <h1>TP Final Dev-01</h1>  
+      <h1>Trabajo Practico Final</h1>  
 
       <div>
         
