@@ -1,12 +1,12 @@
 import { useState, useEffect } from "react";
 import { setItem, getItem } from "./utils/localStorage";
-import GastosFormulario from "./GastosFormulario";  // Importara formulario
-import GastosTabla from "./GastosTabla";  // Importara la tabla
+import GastosFormulario from "./GastosFormulario"; 
+import GastosTabla from "./GastosTabla";  
 
-// Componente principal: Home (gestiona estado y logica)
+// Componente principal: Home (gestion estado y logica)
 function Home() {
 
-  /*Datos x tomar */
+  //Datos
   const [fecha, setFecha] = useState("");  
   const [detalle, setDetalle] = useState(""); 
   const [categoria, setCategoria] = useState("");  
@@ -15,7 +15,7 @@ function Home() {
   //Array donde se guardan todos los gastos
   const [gastos, setGastos] = useState([]);  
 
-  //pivote donde guardar gastos antes de actualizad/remplazar
+  //bandera que muestra si se esta actualizando o editando, + va a traer datos de GastosTabla
   const [gastoEditando, setGastoEditando] = useState(null);  
 
   // Cargar gastos guardados al iniciar
@@ -26,22 +26,23 @@ function Home() {
     }
   }, []);  // [] hace q solo se active al montar
 
-  // Agregar o actualizar gasto
-  function agregarGasto() {  
+
+  function agregarGasto() { 
+    
+    // Valida que los campos esten correctamente puestos ++ que monto sea un numero
     if (!monto || !categoria || !fecha) {
       alert("Por favor completa fecha, categoría y monto");
       return;
     }
-
-    // actualizado boton: Validar q el monto sea numero mayor a 0
     const montoNumerico = parseFloat(monto); 
     if (isNaN(montoNumerico) || montoNumerico <= 0) { 
       alert("El monto debe ser un mayor a 0");
       return;
     }
 
+    //declara un nuevo gasto
     const nuevoGasto = {
-      id: gastoEditando ? gastoEditando.id : Date.now(), // ID unico, se toma en microsegundos
+      id: gastoEditando ? gastoEditando.id : Date.now(), // ID unico, se toma en milisegundos
       monto: monto,
       categoria: categoria,
       fecha: fecha,
@@ -50,13 +51,14 @@ function Home() {
 
     let nuevosGastos;  // Variable nuevo array
 
+    //si gasto.id == gastoEditado.id: se remplazara gasto por gastoEditado, si no se remplazara gasto por si mismo
     if (gastoEditando) { 
       nuevosGastos = gastos.map(gasto => 
         gasto.id === gastoEditando.id ? nuevoGasto : gasto
       );
-      setGastoEditando(null);  // Resetea edicion
+      setGastoEditando(null);  // Resetea el valor de gastoEditado para poder volver a usarlo de pivote
     } else {  
-      nuevosGastos = [...gastos, nuevoGasto]; 
+      nuevosGastos = [...gastos, nuevoGasto]; //si !gastoEditado entonces solo se agrega al Array de gastos
     }
 
     setGastos(nuevosGastos);
@@ -69,7 +71,7 @@ function Home() {
     setMonto(""); 
   }
 
-  //Eliminar gasto
+  // Elimina el gasto cuyo id coincide, actualiza el estado y guarda el nuevo listado
   function eliminarGasto(id) {  
     const nuevosGastos = gastos.filter(gasto => gasto.id !== id);  
     setGastos(nuevosGastos);  
@@ -99,7 +101,7 @@ function Home() {
       <h1>TP Final Dev-01</h1>  
 
       <div>
-        {/* Componente formulario: pasa estado + funciones */}
+        
         <GastosFormulario 
           fecha={fecha}
           detalle={detalle}
@@ -114,13 +116,19 @@ function Home() {
           cancelarEdicion={cancelarEdicion}
         />
 
-        {/* Componente tabla: pasa gastos + funciones */}
         <GastosTabla 
           gastos={gastos}
           editarGasto={editarGasto}
           eliminarGasto={eliminarGasto}
         />
       </div>
+
+ <footer className="footer has-text-centered">
+      <div className="content">
+        <p>Ana Luz M. Cristaldo</p>
+      </div>
+    </footer>
+
     </>
   );
 }

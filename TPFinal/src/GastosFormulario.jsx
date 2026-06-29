@@ -34,7 +34,7 @@ function GastosFormulario({
           </div>
         </div>
 
-        {/* Columna 2: select categoriia */}
+        {/* Columna 2: select categoria */}
         <div className="column">
           <div class="field">
             <label class="label">Categoria</label>
@@ -55,13 +55,12 @@ function GastosFormulario({
             </div>
           </div>
         </div>
-
+        
         {/* Columna 3: input monto (solo numeros) */}
         <div className="column">
           <div class="field">
             <label class="label">Monto$</label>
             <div class="control">
-              {/*actualiza el boton: input solo acepta numeros! */}
               <input class="input" type="number" placeholder="..."
                 value={monto}
                 min="0"
@@ -105,4 +104,4 @@ function GastosFormulario({
   );
 }
 
-export default GastosFormulario;  // Exportar componente
+export default GastosFormulario; 
